@@ -160,9 +160,9 @@ Sistem modüler bir yapıda geliştirilmiştir:
 
 ```python
 CLASS_INFO = {
-    0: {"name": "Potasyum Eksikliği", "count": 36, "target": 250},
-    1: {"name": "Azot Eksikliği", "count": 47, "target": 250},
-    2: {"name": "Azot ve Potasyum Eksikliği", "count": 40, "target": 250}
+    0: {"name": "Potasyum Eksikliği", "count": 36, "target": 500},
+    1: {"name": "Azot Eksikliği", "count": 47, "target": 500},
+    2: {"name": "Azot ve Potasyum Eksikliği", "count": 40, "target": 500}
 }
 
 INPUT_DIR = "dataset/original"
