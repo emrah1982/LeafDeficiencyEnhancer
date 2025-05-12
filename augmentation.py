@@ -17,7 +17,7 @@ def copy_original_data():
     all_images = []
     
     # Görüntü klasörünü kontrol et
-    image_files = [f for f in os.listdir(IMAGES_DIR) if f.endswith(('.jpg', '.png', '.jpeg'))]
+    image_files = [f for f in os.listdir(IMAGES_DIR) if f.lower().endswith(('.jpg', '.png', '.jpeg', '.JPG', '.PNG', '.JPEG'))]
     
     for img_file in image_files:
         img_path = os.path.join(IMAGES_DIR, img_file)
