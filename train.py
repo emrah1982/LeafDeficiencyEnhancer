@@ -1,37 +1,37 @@
 from ultralytics import YOLO
+import os
 
-# Model
-model = YOLO('yolov8n.pt')  # yüklü bir YOLOv8n modeli yükle
+def train_yolo(model_name='yolov8n.pt', epochs=10, batch_size=16, image_size=640):
+    print(f"\nEğitim başlıyor...")
+    print(f"Model: {model_name}")
+    print(f"Epochs: {epochs}")
+    print(f"Batch Size: {batch_size}")
+    print(f"Image Size: {image_size}\n")
 
-# Eğitim
-results = model.train(
-    data='dataset/yolo/dataset.yaml',  # veri seti yapılandırma dosyası
-    epochs=100,                        # epoch sayısı
-    imgsz=640,                        # görüntü boyutu
-    batch=16,                         # batch size
-    name='besin_eksikligi',           # deney adı
-    patience=20,                      # early stopping patience
-    save=True,                        # en iyi modeli kaydet
-    device='0',                       # GPU kullan (eğer varsa)
-    project='runs/train',             # proje dizini
-    optimizer='Adam',                 # optimizer
-    lr0=0.001,                       # başlangıç learning rate
-    lrf=0.01,                        # final learning rate factor
-    momentum=0.937,                  # SGD momentum/Adam beta1
-    weight_decay=0.0005,             # optimizer weight decay
-    warmup_epochs=3.0,               # warmup epochs
-    warmup_momentum=0.8,             # warmup başlangıç momentum
-    warmup_bias_lr=0.1,             # warmup başlangıç bias lr
-    box=7.5,                         # box loss gain
-    cls=0.5,                         # cls loss gain
-    dfl=1.5,                         # dfl loss gain
-    label_smoothing=0.1,             # label smoothing epsilon
-    plots=True,                      # training plots
-    save_period=10                   # her 10 epochta bir kaydet
-)
+    # Veri seti yolu kontrolü
+    yaml_path = 'dataset/yolo/dataset.yaml'
+    if not os.path.exists(yaml_path):
+        raise FileNotFoundError(f"dataset.yaml dosyası bulunamadı: {yaml_path}")
+    # Model yükleme
+    try:
+        model = YOLO(model_name)
+        print("Model başarıyla yüklendi.")
+    except Exception as e:
+        raise Exception(f"Model yüklenirken hata: {e}")
 
-# Validasyon
-results = model.val()
+    # Eğitim
+    try:
+        results = model.train(
+            data=yaml_path,
+            epochs=epochs,
+            imgsz=image_size,
+            batch=batch_size,
+            name='besin_eksikligi_test_run'
+        )
+        print("\nEğitim başarıyla tamamlandı!")
+        print(f"Sonuçlar: runs/detect/train/besin_eksikligi_test_run klasöründe")
+    except Exception as e:
+        raise Exception(f"Eğitim sırasında hata: {e}")
 
-# Test
-results = model.predict('path/to/test/image.jpg', save=True, conf=0.5)
+if __name__ == "__main__":
+    train_yolo()
