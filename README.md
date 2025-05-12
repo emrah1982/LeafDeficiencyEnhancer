@@ -150,9 +150,9 @@ Sistem modüler bir yapıda geliştirilmiştir:
 
 | Sınıf                        | Orijinal Görüntü | Çoğaltılmış |
 |-----------------------------|------------------|-------------|
-| Potasyum Eksikliği          | 36               | ~250        |
-| Azot Eksikliği              | 47               | ~250        |
-| Azot ve Potasyum Eksikliği | 40               | ~250        |
+| Potasyum Eksikliği          | 36               | ~500        |
+| Azot Eksikliği              | 47               | ~500        |
+| Azot ve Potasyum Eksikliği  | 40               | ~500        |
 
 ## 📝 Konfigürasyon
 
