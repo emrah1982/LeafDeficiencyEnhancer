@@ -11,67 +11,58 @@ def convert_vott_to_yolo(json_file, output_dir=None):
     json_file (str): Dönüştürülecek JSON dosyasının yolu
     output_dir (str, opsiyonel): Çıktı dosyalarının kaydedileceği dizin
     """
-    # JSON dosyasını oku
-    with open(json_file, 'r') as f:
+    with open(json_file, 'r', encoding='utf-8') as f:
         data = json.load(f)
 
-    # Eğer çıktı dizini belirtilmemişse, JSON dosyasının bulunduğu dizini kullan
     if output_dir is None:
         output_dir = os.path.dirname(json_file)
 
-    # Çıktı dizini yoksa oluştur
     os.makedirs(output_dir, exist_ok=True)
 
-    # Görüntü boyutlarını al
     img_width = data['asset']['size']['width']
     img_height = data['asset']['size']['height']
 
-    # Çıktı dosyasının adını belirle
-    # URL kodlamasını çöz (%20 -> boşluk)
     image_name = urllib.parse.unquote(data['asset']['name'])
-    # Uzantıyı kaldır
     image_name = os.path.splitext(image_name)[0]
     output_file = os.path.join(output_dir, f"{image_name}.txt")
 
-    # Etiket sınıflarını belirle
-    # Yorumunuza göre güncellendi: tomato__K:0 ve tomato__N:1
+    # Etiket sözlüğü - hem doğru hem yanlış yazımlar dahil
     labels = {
         "tomato__K": 0,
+        "tomato_K": 0,
         "tomato__N": 1,
-        "tomato__N_K": 2
+        "tomato_N": 1,
+        "tomato__N_K": 2,
+        "tomato_N_K": 2
     }
 
-    with open(output_file, 'w') as f:
-        for region in data['regions']:
-            # Bölgenin etiketini al
-            tag = region['tags'][0]
-            # Etiket sözlükte yoksa varsayılan olarak 999 kullan
-            class_id = labels.get(tag, 999)
+    with open(output_file, 'w', encoding='utf-8') as f_out:
+        for region in data.get('regions', []):
+            tag = region['tags'][0].strip()  # boşluk karakterlerine karşı önlem
 
-            # Polygon noktalarını al
+            class_id = labels.get(tag, 999)
+            if class_id == 999:
+                print(f"⚠️ Uyarı: '{tag}' etiketi tanınmadı. '999' olarak işaretlendi. (Dosya: {os.path.basename(json_file)})")
+
             points = region['points']
-            
-            # Bounding box'u hesapla
             x_coords = [point['x'] for point in points]
             y_coords = [point['y'] for point in points]
-            
-            # Minimum ve maksimum x ve y koordinatlarını bul
+
             xmin = min(x_coords)
             xmax = max(x_coords)
             ymin = min(y_coords)
             ymax = max(y_coords)
-            
-            # YOLO formatı için merkez noktası ve boyutları hesapla ve normalize et
+
             x_center = ((xmin + xmax) / 2) / img_width
             y_center = ((ymin + ymax) / 2) / img_height
             width = (xmax - xmin) / img_width
             height = (ymax - ymin) / img_height
-            
-            # YOLO formatında dosyaya yaz
-            f.write(f"{class_id} {x_center:.6f} {y_center:.6f} {width:.6f} {height:.6f}\n")
 
-    print(f"Dönüştürme tamamlandı: {output_file}")
+            f_out.write(f"{class_id} {x_center:.6f} {y_center:.6f} {width:.6f} {height:.6f}\n")
+
+    print(f"✅ Dönüştürme tamamlandı: {output_file}")
     return output_file
+
 
 def batch_convert(json_dir, output_dir=None):
     """
@@ -81,12 +72,17 @@ def batch_convert(json_dir, output_dir=None):
     output_dir (str, opsiyonel): Çıktı dosyalarının kaydedileceği dizin
     """
     json_files = glob.glob(os.path.join(json_dir, "*.json"))
+    if not json_files:
+        print(f"🚫 Hata: '{json_dir}' içinde JSON dosyası bulunamadı.")
+        return
+
     for json_file in json_files:
         convert_vott_to_yolo(json_file, output_dir)
 
-# Kullanım örnekleri:
-# Örnek 1: Tek bir dosyayı dönüştürmek için
-# convert_vott_to_yolo("2bb372f108aac1f227a997dc18bb6f59-asset.json", "yolo_labels")
 
-# Örnek 2: Bir dizindeki tüm JSON dosyalarını dönüştürmek için
-batch_convert(r"C:\Users\User\Desktop\Bitki_label_2\tomato__N_K", "yolo_labels")
+# === KULLANIM ===
+# Tek tek dönüştürmek için (örnek):
+# convert_vott_to_yolo(r"C:\path\to\file.json", r"C:\path\to\output")
+
+# Tüm klasörü dönüştürmek için:
+batch_convert(r"C:\Users\User\Desktop\Bitki_label_2\tomato__K", "yolo_labels")
