@@ -49,12 +49,12 @@ def get_class_images(images_dir, labels_dir):
             continue
             
         # Dosya adından sınıfı belirle
-        if '__K' in img_file and not '__N' in img_file:
-            class_id = 0  # Potasyum Eksikliği
-        elif '__N' in img_file and not '__K' in img_file:
-            class_id = 1  # Azot Eksikliği
-        elif '__N_K' in img_file or ('__N' in img_file and '__K' in img_file):
+        if '__N_K' in img_file:
             class_id = 2  # Azot ve Potasyum Eksikliği
+        elif '__K' in img_file:
+            class_id = 0  # Potasyum Eksikliği
+        elif '__N' in img_file:
+            class_id = 1  # Azot Eksikliği
         else:
             continue
             
