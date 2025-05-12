@@ -22,9 +22,15 @@ def split_dataset():
     """Veri setini train, validation ve test olarak böler"""
     print("\nVeri seti train, validation ve test olarak bölünüyor...")
     
-    # Görüntü dosyalarını listele
+    # Görüntü dosyalarını listele (train ve val klasörlerinden)
     images_path = os.path.join(DATASET_PATH, "images")
-    image_files = [f for f in os.listdir(images_path) if f.endswith(('.jpg', '.png', '.jpeg'))]
+    image_files = []
+    for folder in ['train', 'val']:
+        folder_path = os.path.join(images_path, folder)
+        if os.path.exists(folder_path):
+            files = [os.path.join(folder, f) for f in os.listdir(folder_path) 
+                    if f.endswith(('.jpg', '.png', '.jpeg'))]
+            image_files.extend(files)
     
     # Rastgele karıştır
     random.seed(RANDOM_SEED)
@@ -47,14 +53,15 @@ def split_dataset():
         print(f"\n{split_name.capitalize()} setine dosyalar kopyalanıyor...")
         for img_file in files:
             # Görüntü dosyasını kopyala
+            src_folder, img_name = os.path.split(img_file)
             src_img = os.path.join(DATASET_PATH, "images", img_file)
-            dst_img = os.path.join(SPLIT_PATH, split_name, "images", img_file)
+            dst_img = os.path.join(SPLIT_PATH, split_name, "images", img_name)
             shutil.copy2(src_img, dst_img)
             
             # Etiket dosyasını kopyala
-            label_file = os.path.splitext(img_file)[0] + '.txt'
-            src_label = os.path.join(DATASET_PATH, "labels", label_file)
-            dst_label = os.path.join(SPLIT_PATH, split_name, "labels", label_file)
+            label_name = os.path.splitext(img_name)[0] + '.txt'
+            src_label = os.path.join(DATASET_PATH, "labels", src_folder, label_name)
+            dst_label = os.path.join(SPLIT_PATH, split_name, "labels", label_name)
             shutil.copy2(src_label, dst_label)
         
         print(f"{split_name.capitalize()} set: {len(files)} görüntü")

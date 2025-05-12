@@ -60,6 +60,47 @@ def main():
     print("="*80)
     
     # Eğitim seçeneklerini göster
+    # YOLO modellerini indirme seçenekleri
+    print("\nYOLO modellerini indirmek ister misiniz?")
+    print("1. Tüm modelleri indir (YOLOv8n, YOLOv8s, YOLOv8m)")
+    print("2. Sadece seçilen modeli indir")
+    print("3. Model indirme (zaten indirilmiş)")
+    
+    while True:
+        download_choice = input("\nSeçiminiz (1/2/3): ")
+        if download_choice in ['1', '2', '3']:
+            break
+        print("Lütfen 1, 2 veya 3 girin.")
+    
+    if download_choice == '1':
+        print("\nTüm modeller indiriliyor...")
+        os.system("yolo download model yolov8n.pt")
+        os.system("yolo download model yolov8s.pt")
+        os.system("yolo download model yolov8m.pt")
+        print("Tüm modeller indirildi!")
+    elif download_choice == '2':
+        print("\nHangi modeli indirmek istersiniz?")
+        print("1. YOLOv8n (küçük model)")
+        print("2. YOLOv8s (orta model)")
+        print("3. YOLOv8m (büyük model)")
+        
+        while True:
+            model_choice = input("\nModel seçiminiz (1/2/3): ")
+            if model_choice in ['1', '2', '3']:
+                break
+            print("Lütfen 1, 2 veya 3 girin.")
+        
+        models = {
+            '1': 'yolov8n.pt',
+            '2': 'yolov8s.pt',
+            '3': 'yolov8m.pt'
+        }
+        
+        print(f"\n{models[model_choice]} indiriliyor...")
+        os.system(f"yolo download model {models[model_choice]}")
+        print("Model indirildi!")
+    
+    # Eğitim seçenekleri
     print("\nEğitim için seçenekler:")
     print("1. Hızlı Eğitim (YOLOv8n - 100 epoch)")
     print("2. Standart Eğitim (YOLOv8s - 200 epoch)")
