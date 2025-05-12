@@ -7,7 +7,6 @@ import urllib.parse  # URL kodlamasını çözmek için
 def convert_vott_to_yolo(json_file, output_dir=None):
     """
     VoTT JSON formatını YOLO formatına dönüştürür.
-    
     Parametreler:
     json_file (str): Dönüştürülecek JSON dosyasının yolu
     output_dir (str, opsiyonel): Çıktı dosyalarının kaydedileceği dizin
@@ -15,35 +14,40 @@ def convert_vott_to_yolo(json_file, output_dir=None):
     # JSON dosyasını oku
     with open(json_file, 'r') as f:
         data = json.load(f)
-    
+
     # Eğer çıktı dizini belirtilmemişse, JSON dosyasının bulunduğu dizini kullan
     if output_dir is None:
         output_dir = os.path.dirname(json_file)
-    
+
     # Çıktı dizini yoksa oluştur
     os.makedirs(output_dir, exist_ok=True)
-    
+
     # Görüntü boyutlarını al
     img_width = data['asset']['size']['width']
     img_height = data['asset']['size']['height']
-    
+
     # Çıktı dosyasının adını belirle
     # URL kodlamasını çöz (%20 -> boşluk)
     image_name = urllib.parse.unquote(data['asset']['name'])
     # Uzantıyı kaldır
     image_name = os.path.splitext(image_name)[0]
     output_file = os.path.join(output_dir, f"{image_name}.txt")
-    
-    # Etiket sınıflarını belirle (bu örnekte sadece bir tane var: tomato__K)
-    # Gerçek uygulamada tüm etiketlerinizi içeren bir liste oluşturmalısınız
-    labels = {"tomato__K": 0}  # 0: tomato__K sınıf indeksi
-    
+
+    # Etiket sınıflarını belirle
+    # Yorumunuza göre güncellendi: tomato__K:0 ve tomato__N:1
+    labels = {
+        "tomato__K": 0,
+        "tomato__N": 1,
+        "tomato__N_K": 2
+    }
+
     with open(output_file, 'w') as f:
         for region in data['regions']:
             # Bölgenin etiketini al
             tag = region['tags'][0]
-            class_id = labels.get(tag, 0)
-            
+            # Etiket sözlükte yoksa varsayılan olarak 999 kullan
+            class_id = labels.get(tag, 999)
+
             # Polygon noktalarını al
             points = region['points']
             
@@ -65,27 +69,24 @@ def convert_vott_to_yolo(json_file, output_dir=None):
             
             # YOLO formatında dosyaya yaz
             f.write(f"{class_id} {x_center:.6f} {y_center:.6f} {width:.6f} {height:.6f}\n")
-    
+
     print(f"Dönüştürme tamamlandı: {output_file}")
     return output_file
 
 def batch_convert(json_dir, output_dir=None):
     """
     Belirtilen dizindeki tüm JSON dosyalarını YOLO formatına dönüştürür.
-    
     Parametreler:
     json_dir (str): JSON dosyalarının bulunduğu dizin
     output_dir (str, opsiyonel): Çıktı dosyalarının kaydedileceği dizin
     """
     json_files = glob.glob(os.path.join(json_dir, "*.json"))
-    
     for json_file in json_files:
         convert_vott_to_yolo(json_file, output_dir)
 
 # Kullanım örnekleri:
-
 # Örnek 1: Tek bir dosyayı dönüştürmek için
-#convert_vott_to_yolo("2bb372f108aac1f227a997dc18bb6f59-asset.json", "yolo_labels")
+# convert_vott_to_yolo("2bb372f108aac1f227a997dc18bb6f59-asset.json", "yolo_labels")
 
 # Örnek 2: Bir dizindeki tüm JSON dosyalarını dönüştürmek için
-# batch_convert("/path/to/json/files", "yolo_labels")
+batch_convert(r"C:\Users\User\Desktop\Bitki_label_2\tomato__N_K", "yolo_labels")
