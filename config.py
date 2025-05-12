@@ -2,6 +2,10 @@
 
 import os
 
+# Ana dizin
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+
 # Veri seti bilgileri
 CLASS_INFO = {
     0: {"name": "Potasyum Eksikliği", "count": 36, "target": 250},
