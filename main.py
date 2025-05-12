@@ -74,6 +74,14 @@ def main():
     
     if download_choice == '1':
         print("\nTüm modeller indiriliyor...")
+        try:
+            import ultralytics
+        except ImportError:
+            print("Ultralytics paketi yükleniyor...")
+            import subprocess
+            subprocess.run(["pip", "install", "ultralytics"], check=True)
+            import ultralytics
+        
         from ultralytics import YOLO
         print("YOLOv8n indiriliyor...")
         YOLO('yolov8n.pt')
@@ -102,6 +110,14 @@ def main():
         
         model_name = models[model_choice]
         print(f"\n{model_name} indiriliyor...")
+        try:
+            import ultralytics
+        except ImportError:
+            print("Ultralytics paketi yükleniyor...")
+            import subprocess
+            subprocess.run(["pip", "install", "ultralytics"], check=True)
+            import ultralytics
+        
         from ultralytics import YOLO
         YOLO(model_name)
         print("Model indirildi!")
