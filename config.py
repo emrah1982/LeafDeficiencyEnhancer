@@ -18,7 +18,7 @@ CLASS_INFO = {
 #OUTPUT_DIR = "dataset/augmented"  # Çoğaltılmış veri seti
 
 INPUT_DIR = '/dataset/original'
-OUTPUT_DIR = 'dataset/augmented'
+OUTPUT_DIR = '/dataset/augmented'
 IMAGES_DIR = os.path.join(INPUT_DIR, "images")
 LABELS_DIR = os.path.join(INPUT_DIR, "labels")
 OUTPUT_IMAGES_DIR = os.path.join(OUTPUT_DIR, "images")
