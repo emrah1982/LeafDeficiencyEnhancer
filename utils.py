@@ -35,32 +35,34 @@ def bbox_to_yolo(class_id, x_min, y_min, x_max, y_max, image_width, image_height
 
 # Görüntü ve etiketleri sınıfa göre organize et
 def get_class_images(images_dir, labels_dir):
-    """Görüntüleri sınıflara göre gruplar"""
+    """Her sınıf için görüntüleri belirler"""
     class_images = {0: [], 1: [], 2: []}
-    image_files = [f for f in os.listdir(images_dir) if f.endswith(('.jpg', '.png', '.jpeg'))]
+    
+    # Görüntü klasörünü kontrol et
+    image_files = [f for f in os.listdir(images_dir) if f.lower().endswith(('.jpg', '.png', '.jpeg', '.JPG', '.PNG', '.JPEG'))]
     
     for img_file in image_files:
-        img_path = os.path.join(images_dir, img_file)
         label_file = os.path.splitext(img_file)[0] + '.txt'
         label_path = os.path.join(labels_dir, label_file)
         
         if not os.path.exists(label_path):
             continue
-        
-        # Etiketi oku ve sınıfları bul
-        with open(label_path, 'r') as f:
-            lines = f.readlines()
-            for line in lines:
-                parts = line.strip().split()
-                if len(parts) == 5:
-                    class_id = int(parts[0])
-                    if class_id in class_images:
-                        if img_file not in class_images[class_id]:
-                            class_images[class_id].append(img_file)
+            
+        # Dosya adından sınıfı belirle
+        if '__K' in img_file and not '__N' in img_file:
+            class_id = 0  # Potasyum Eksikliği
+        elif '__N' in img_file and not '__K' in img_file:
+            class_id = 1  # Azot Eksikliği
+        elif '__N_K' in img_file or ('__N' in img_file and '__K' in img_file):
+            class_id = 2  # Azot ve Potasyum Eksikliği
+        else:
+            continue
+            
+        class_images[class_id].append(img_file)
+        CLASS_INFO[class_id]['count'] = len(class_images[class_id])
     
     # Sınıf sayılarını güncelle
     for class_id, images in class_images.items():
-        CLASS_INFO[class_id]["count"] = len(images)
         print(f"Sınıf {class_id} ({CLASS_INFO[class_id]['name']}): {len(images)} görüntü")
     
     return class_images
