@@ -74,9 +74,13 @@ def main():
     
     if download_choice == '1':
         print("\nTüm modeller indiriliyor...")
-        os.system("yolo download model yolov8n.pt")
-        os.system("yolo download model yolov8s.pt")
-        os.system("yolo download model yolov8m.pt")
+        from ultralytics import YOLO
+        print("YOLOv8n indiriliyor...")
+        YOLO('yolov8n.pt')
+        print("YOLOv8s indiriliyor...")
+        YOLO('yolov8s.pt')
+        print("YOLOv8m indiriliyor...")
+        YOLO('yolov8m.pt')
         print("Tüm modeller indirildi!")
     elif download_choice == '2':
         print("\nHangi modeli indirmek istersiniz?")
@@ -96,8 +100,10 @@ def main():
             '3': 'yolov8m.pt'
         }
         
-        print(f"\n{models[model_choice]} indiriliyor...")
-        os.system(f"yolo download model {models[model_choice]}")
+        model_name = models[model_choice]
+        print(f"\n{model_name} indiriliyor...")
+        from ultralytics import YOLO
+        YOLO(model_name)
         print("Model indirildi!")
     
     # Eğitim seçenekleri

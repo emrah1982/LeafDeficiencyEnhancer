@@ -22,15 +22,23 @@ def split_dataset():
     """Veri setini train, validation ve test olarak böler"""
     print("\nVeri seti train, validation ve test olarak bölünüyor...")
     
-    # Görüntü dosyalarını listele (train ve val klasörlerinden)
+    # Görüntü dosyalarını listele
     images_path = os.path.join(DATASET_PATH, "images")
     image_files = []
+    
+    # Önce train ve val klasörlerinden görüntüleri al
     for folder in ['train', 'val']:
         folder_path = os.path.join(images_path, folder)
         if os.path.exists(folder_path):
             files = [os.path.join(folder, f) for f in os.listdir(folder_path) 
                     if f.endswith(('.jpg', '.png', '.jpeg'))]
             image_files.extend(files)
+    
+    # Eğer görüntü bulunamazsa, doğrudan images klasörüne bak
+    if not image_files and os.path.exists(images_path):
+        files = [f for f in os.listdir(images_path) 
+                if f.endswith(('.jpg', '.png', '.jpeg'))]
+        image_files.extend(files)
     
     # Rastgele karıştır
     random.seed(RANDOM_SEED)
@@ -52,17 +60,25 @@ def split_dataset():
     for split_name, files in splits.items():
         print(f"\n{split_name.capitalize()} setine dosyalar kopyalanıyor...")
         for img_file in files:
-            # Görüntü dosyasını kopyala
-            src_folder, img_name = os.path.split(img_file)
-            src_img = os.path.join(DATASET_PATH, "images", img_file)
-            dst_img = os.path.join(SPLIT_PATH, split_name, "images", img_name)
-            shutil.copy2(src_img, dst_img)
-            
-            # Etiket dosyasını kopyala
-            label_name = os.path.splitext(img_name)[0] + '.txt'
-            src_label = os.path.join(DATASET_PATH, "labels", src_folder, label_name)
-            dst_label = os.path.join(SPLIT_PATH, split_name, "labels", label_name)
-            shutil.copy2(src_label, dst_label)
+            try:
+                # Görüntü dosyasını kopyala
+                if '/' in img_file or '\\' in img_file:
+                    src_folder, img_name = os.path.split(img_file)
+                    src_img = os.path.join(DATASET_PATH, "images", img_file)
+                    src_label = os.path.join(DATASET_PATH, "labels", src_folder, os.path.splitext(img_name)[0] + '.txt')
+                else:
+                    img_name = img_file
+                    src_img = os.path.join(DATASET_PATH, "images", img_name)
+                    src_label = os.path.join(DATASET_PATH, "labels", os.path.splitext(img_name)[0] + '.txt')
+                
+                dst_img = os.path.join(SPLIT_PATH, split_name, "images", img_name)
+                dst_label = os.path.join(SPLIT_PATH, split_name, "labels", os.path.splitext(img_name)[0] + '.txt')
+                
+                # Dosyaları kopyala
+                shutil.copy2(src_img, dst_img)
+                shutil.copy2(src_label, dst_label)
+            except Exception as e:
+                print(f"Hata: {e} - Dosya: {img_file}")
         
         print(f"{split_name.capitalize()} set: {len(files)} görüntü")
 
