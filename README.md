@@ -1,7 +1,7 @@
 
-# 🌿 Besin Eksikliği Tespit Modeli - Veri Çoğaltma Sistemi
+# 🌿 Besin Eksikliği Tespit Modeli - YOLOv11 Tabanlı
 
-Bu proje, bitkilerde besin eksikliği tespiti için YOLO tabanlı derin öğrenme modellerinin eğitiminde kullanılacak veri setlerini çoğaltma amacıyla geliştirilmiştir. Yetersiz veri ile yüksek doğruluk oranlarına ulaşmak için gelişmiş veri çoğaltma (data augmentation) teknikleri uygulanmaktadır.
+Bu proje, bitkilerde besin eksikliği tespiti için YOLOv11 tabanlı derin öğrenme modellerinin eğitiminde kullanılacak veri setlerini çoğaltma ve model eğitimi amacıyla geliştirilmiştir. Yetersiz veri ile yüksek doğruluk oranlarına ulaşmak için gelişmiş veri çoğaltma (data augmentation) teknikleri ve YOLOv11'in en son özellikleri kullanılmaktadır.
 
 ## 📌 Proje Hakkında
 
@@ -50,7 +50,7 @@ Etiketler, standart YOLO formatında olmalıdır:
 
 ## 🚀 Kullanım
 
-### 1. Veri Çoğaltma
+### 1. Veri Hazırlama ve Çoğaltma
 
 ```bash
 python main.py
@@ -58,13 +58,32 @@ python main.py
 
 Bu komut aşağıdaki işlemleri gerçekleştirir:
 
-- Orijinal görüntülerin kopyalanması  
+- Orijinal görüntülerin kontrolü ve kopyalanması  
 - Temel ve gelişmiş veri çoğaltma tekniklerinin uygulanması  
 - Eğitim ve doğrulama setlerine bölünmesi  
 - Çoğaltma sonuçlarının analizi ve görselleştirilmesi  
 - YOLO eğitimi için YAML konfigürasyon dosyasının oluşturulması  
 
-### 2. YOLO Eğitimi
+### 2. Model İndirme ve Eğitim
+
+```bash
+python train.py
+```
+
+Bu komut size aşağıdaki seçenekleri sunar:
+
+1. **Model İndirme Seçenekleri**:
+   - Tüm YOLOv11 modellerini indir (n, s, m)
+   - Sadece seçilen modeli indir
+   - Mevcut modelleri kullan
+
+2. **Eğitim Stratejileri**:
+   - Hızlı Eğitim (YOLOv11n - 100 epoch)
+   - Standart Eğitim (YOLOv11s - 200 epoch)
+   - Detaylı Eğitim (YOLOv11m - 300 epoch)
+   - İki Aşamalı Eğitim (Ön eğitim + İnce ayar)
+
+Eğitim sonuçları `runs/train/besin_eksikligi` klasöründe toplanır.
 
 Veri çoğaltma tamamlandıktan sonra modeli eğitmek için:
 
@@ -113,7 +132,13 @@ dataset/
 
 Sistem modüler bir yapıda geliştirilmiştir:
 
-- `main.py`: Ana program  
+- `main.py`: Veri çoğaltma ve hazırlama işlemlerini yöneten ana program
+- `train.py`: YOLO11 model indirme, yükleme ve eğitim işlemlerini yöneten program
+  * Ultralytics paket kontrolü ve yükleme
+  * YOLO11 modellerini indirme (n, s, m, l)
+  * 5 farklı eğitim stratejisi
+  * GPU destekli eğitim
+  * Eğitim sonuçlarının izlenmesi
 - `config.py`: Yapılandırma ayarları  
 - `utils.py`: Yardımcı fonksiyonlar  
 - `transforms.py`: Veri çoğaltma dönüşümleri  

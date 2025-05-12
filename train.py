@@ -22,25 +22,27 @@ def download_yolo_models(choice='1'):
     try:
         if choice == '1':
             print("Tüm modeller indiriliyor...")
-            print("YOLOv8n indiriliyor...")
-            YOLO('yolov8n.pt')
-            print("YOLOv8s indiriliyor...")
-            YOLO('yolov8s.pt')
-            print("YOLOv8m indiriliyor...")
-            YOLO('yolov8m.pt')
+            print("YOLO11n indiriliyor...")
+            YOLO('yolo11n.pt')
+            print("YOLO11s indiriliyor...")
+            YOLO('yolo11s.pt')
+            print("YOLO11m indiriliyor...")
+            YOLO('yolo11m.pt')
             print("Tüm modeller indirildi!")
-            return 'yolov8n.pt'  # Test eğitimi için en küçük modeli döndür
+            return 'yolo11n.pt'  # Test eğitimi için en küçük modeli döndür
         elif choice == '2':
             models = {
-                '1': 'yolov8n.pt',
-                '2': 'yolov8s.pt',
-                '3': 'yolov8m.pt'
+                '1': 'yolov11n.pt',
+                '2': 'yolov11s.pt',
+                '3': 'yolov11m.pt'
+                '4': 'yolov11l.pt'
             }
             print("\nHangi modeli indirmek istersiniz?")
-            print("1. YOLOv8n (küçük)")
-            print("2. YOLOv8s (orta)")
-            print("3. YOLOv8m (büyük)")
-            model_choice = input("Seçiminiz (1/2/3): ")
+            print("1. YOLO11n (küçük)")
+            print("2. YOLO11s (orta)")
+            print("3. YOLO11m (büyük)")
+            print("4. YOLO11l (büyük)")
+            model_choice = input("Seçiminiz (1/2/3/4): ")
             
             if model_choice in models:
                 model_name = models[model_choice]
@@ -50,13 +52,13 @@ def download_yolo_models(choice='1'):
                 return model_name
         else:
             print("Mevcut modeller kullanılacak.")
-            return 'yolov8n.pt'
+            return 'yolo11n.pt'
             
     except Exception as e:
         print(f"Model indirme hatası: {e}")
         return None
 
-def train_yolo(model_name='yolov8n.pt', epochs=1000, batch_size=16, image_size=640):
+def train_yolo(model_name='yolov8n.pt', epochs=10, batch_size=16, image_size=640):
     """YOLO modelini eğit"""
     # Veri seti yolu kontrolü
     yaml_path = 'dataset/yolo/dataset.yaml'
@@ -103,30 +105,33 @@ def main():
     print("2. Sadece seçilen modeli indir")
     print("3. Model indirme (zaten indirilmiş)")
     
-    download_choice = input("\nSeçiminiz (1/2/3): ")
+    download_choice = input("\nSeçiminiz (1/2/3/4): ")
     model_name = download_yolo_models(download_choice)
     
     if model_name:
         print("\nEğitim için seçenekler:")
-        print("1. Hızlı Eğitim (YOLOv8n - 100 epoch)")
-        print("2. Standart Eğitim (YOLOv8s - 200 epoch)")
-        print("3. Detaylı Eğitim (YOLOv8m - 300 epoch)")
-        print("4. İki Aşamalı Eğitim (YOLOv8s - Ön eğitim + İnce ayar)")
+        print("1. Hızlı Eğitim (YOLO11n - 100 epoch)")
+        print("2. Standart Eğitim (YOLO11s - 200 epoch)")
+        print("3. Detaylı Eğitim (YOLO11m - 300 epoch)")
+        print("4. Detaylı Eğitim (YOLO11l - 400 epoch)")
+        print("5. İki Aşamalı Eğitim (YOLO11l - Ön eğitim (100 epochs) + İnce ayar(1000 epochs))")
         
         train_choice = input("\nHangi eğitim modelini kullanmak istersiniz? (1/2/3/4): ")
         
         if train_choice == '1':
             train_yolo(model_name=model_name, epochs=100, batch_size=16)
         elif train_choice == '2':
-            train_yolo(model_name='yolov8s.pt', epochs=200, batch_size=16)
+            train_yolo(model_name='yolo11s.pt', epochs=200, batch_size=16)
         elif train_choice == '3':
-            train_yolo(model_name='yolov8m.pt', epochs=300, batch_size=16)
+            train_yolo(model_name='yolo11m.pt', epochs=300, batch_size=16)
         elif train_choice == '4':
+            train_yolo(model_name='yolo11l.pt', epochs=400, batch_size=16)
+        elif train_choice == '5':
             # İki aşamalı eğitim
             print("\nÖn eğitim başlıyor...")
-            train_yolo(model_name='yolov8s.pt', epochs=100, batch_size=16)
+            train_yolo(model_name='yolo11l.pt', epochs=100, batch_size=16)
             print("\nİnce ayar eğitimi başlıyor...")
-            train_yolo(model_name='runs/train/besin_eksikligi/weights/best.pt', epochs=100, batch_size=8)
+            train_yolo(model_name='runs/train/besin_eksikligi/weights/best.pt', epochs=1000, batch_size=32)
 
 if __name__ == "__main__":
     main()
