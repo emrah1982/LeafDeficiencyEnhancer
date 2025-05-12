@@ -28,54 +28,78 @@ def main():
     print("Besin Eksikliği Veri Seti Çoğaltma Başlıyor...")
     print("="*80)
     
-    # Rastgele sayı üretecini ayarla
-    set_random_seed(42)
+    # Rastgele sayı üreteci ayarla
+    random.seed(42)
+    print("Rastgele sayı üreteci ayarlandı: 42")
     
     # Klasörleri oluştur
     setup_directories()
     
-    # Orijinal veri setini kontrol et
-    if not os.path.exists(IMAGES_DIR) or not os.path.exists(LABELS_DIR):
-        print(f"HATA: Veri seti klasörleri bulunamadı: {IMAGES_DIR} veya {LABELS_DIR}")
-        return
-        
     # Orijinal görüntüleri kopyala
-    copy_original_data()
+    all_images = copy_original_data()
     
-    # Sınıf görüntülerini belirle - artık OUTPUT_IMAGES_DIR ve OUTPUT_LABELS_DIR kullanıyoruz
-    class_images = get_class_images(OUTPUT_IMAGES_DIR, OUTPUT_LABELS_DIR)
+    # Her sınıf için görüntüleri belirle
+    class_images = get_class_images(IMAGES_DIR, LABELS_DIR)
     
-    # Temel çoğaltmaları uygula
+    # Temel çoğaltma uygula
     apply_basic_augmentation(class_images)
     
-    # Gelişmiş çoğaltmaları uygula
+    # Mixup ve Mozaik çoğaltma uygula
     apply_advanced_augmentation(class_images)
     
     # Çoğaltılmış veri setini analiz et
-    analyze_augmented_dataset()
+    class_counts = analyze_augmented_dataset()
     
-    # Veri setini eğitim ve doğrulama setlerine böl
-    split_dataset()
+    # Veri setini train, val ve test olarak böl
+    print("\nYOLO veri seti hazırlanıyor...")
+    import split_dataset
+    split_dataset.main()
     
-    # YAML dosyası oluştur
-    yaml_path = create_yaml_file()
-    
-    # Çoğaltma örneklerini görselleştir
-    if VISUALIZE_EXAMPLES:
-        visualize_augmentations()
-    
-    print("\n"+"="*80)
+    print("="*80)
     print("Veri çoğaltma işlemi tamamlandı!")
     print("="*80)
-    print("\nEğitim için aşağıdaki komutu kullanabilirsiniz:")
-    print(f"python train.py --img 640 --batch 16 --epochs 300 --data {yaml_path} --weights yolo11l.pt")
-    print("\nİki aşamalı eğitim için önerilen komutlar:")
-    print("1. Aşama: Genel eğitim")
-    print(f"python train.py --img 640 --batch 16 --epochs 200 --data {yaml_path} \\")
-    print("    --weights yolo11l.pt --patience 50 --label-smoothing 0.1")
-    print("\n2. Aşama: İnce ayar")
-    print(f"python train.py --img 640 --batch 8 --epochs 100 --data {yaml_path} \\")
-    print("    --weights runs/train/exp/weights/best.pt --patience 50 --freeze 10 --lr0 0.0001")
+    
+    # Eğitim seçeneklerini göster
+    print("\nEğitim için seçenekler:")
+    print("1. Hızlı Eğitim (YOLOv8n - 100 epoch)")
+    print("2. Standart Eğitim (YOLOv8s - 200 epoch)")
+    print("3. Detaylı Eğitim (YOLOv8m - 300 epoch)")
+    print("4. İki Aşamalı Eğitim (YOLOv8s - Ön eğitim + İnce ayar)")
+    
+    while True:
+        choice = input("\nHangi eğitim modelini kullanmak istersiniz? (1/2/3/4): ")
+        if choice in ['1', '2', '3', '4']:
+            break
+        print("Lütfen 1, 2, 3 veya 4 girin.")
+    
+    if choice == '1':
+        print("\nHızlı Eğitim komutu:")
+        print("yolo task=detect mode=train model=yolov8n.pt data=dataset/yolo/dataset.yaml epochs=100 imgsz=640 batch=16")
+    
+    elif choice == '2':
+        print("\nStandart Eğitim komutu:")
+        print("yolo task=detect mode=train model=yolov8s.pt data=dataset/yolo/dataset.yaml epochs=200 imgsz=640 batch=16 patience=50")
+    
+    elif choice == '3':
+        print("\nDetaylı Eğitim komutu:")
+        print("yolo task=detect mode=train model=yolov8m.pt data=dataset/yolo/dataset.yaml epochs=300 imgsz=640 batch=16 patience=50")
+    
+    else:
+        print("\nİki Aşamalı Eğitim komutları:")
+        print("1. Aşama - Ön eğitim:")
+        print("yolo task=detect mode=train model=yolov8s.pt data=dataset/yolo/dataset.yaml epochs=200 imgsz=640 batch=16 patience=50 label-smoothing=0.1")
+        print("\n2. Aşama - İnce ayar (ilk aşama tamamlandıktan sonra):")
+        print("yolo task=detect mode=train model=runs/train/exp/weights/best.pt data=dataset/yolo/dataset.yaml epochs=100 imgsz=640 batch=8 patience=50 freeze=10")
+    
+    # İleri seviye eğitim önerileri
+    print("\nÖneriler:")
+    print("1. İlk önce küçük bir model (yolov8n.pt) ile kısa bir eğitim (10-20 epoch) yaparak")
+    print("   her şeyin doğru çalıştığından emin olun.")
+    print("2. Daha sonra daha büyük bir model (yolov8s.pt veya yolov8m.pt) ve daha fazla")
+    print("   epoch (100-300) ile tam eğitimi gerçekleştirin.")
+    print("3. Eğitim sırasında runs/train/besin_eksikligi klasöründe sonuçları ve")
+    print("   grafikleri görebilirsiniz.")
+    print("4. En iyi model runs/train/besin_eksikligi/weights/best.pt olarak kaydedilecektir.")
 
 if __name__ == "__main__":
     main()
