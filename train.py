@@ -32,10 +32,10 @@ def download_yolo_models(choice='1'):
             return 'yolo11n.pt'  # Test eğitimi için en küçük modeli döndür
         elif choice == '2':
             models = {
-                '1': 'yolov11n.pt',
-                '2': 'yolov11s.pt',
-                '3': 'yolov11m.pt'
-                '4': 'yolov11l.pt'
+                '1': 'yolo11n.pt',
+                '2': 'yolo11s.pt',
+                '3': 'yolo11m.pt',
+                '4': 'yolo11l.pt'
             }
             print("\nHangi modeli indirmek istersiniz?")
             print("1. YOLO11n (küçük)")
