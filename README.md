@@ -200,7 +200,7 @@ def predict_with_tta(model, image_path, conf=0.25, iou=0.45):
 
 ## 📄 Lisans
 
-Bu proje [MIT Lisansı](LICENSE) altında lisanslanmıştır.
+Bu proje [... Lisansı](LICENSE) altında lisanslanmıştır.
 
 ## 👥 Katkıda Bulunma
 
