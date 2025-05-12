@@ -105,7 +105,7 @@ def main():
     print("2. Sadece seçilen modeli indir")
     print("3. Model indirme (zaten indirilmiş)")
     
-    download_choice = input("\nSeçiminiz (1/2/3/4): ")
+    download_choice = input("\nSeçiminiz (1/2/3/4/5): ")
     model_name = download_yolo_models(download_choice)
     
     if model_name:
