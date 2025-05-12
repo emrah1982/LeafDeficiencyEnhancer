@@ -56,7 +56,7 @@ def download_yolo_models(choice='1'):
         print(f"Model indirme hatası: {e}")
         return None
 
-def train_yolo(model_name='yolov8n.pt', epochs=10, batch_size=16, image_size=640):
+def train_yolo(model_name='yolov8n.pt', epochs=1000, batch_size=16, image_size=640):
     """YOLO modelini eğit"""
     # Veri seti yolu kontrolü
     yaml_path = 'dataset/yolo/dataset.yaml'
