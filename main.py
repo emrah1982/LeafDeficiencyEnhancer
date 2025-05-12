@@ -38,12 +38,12 @@ def main():
     if not os.path.exists(IMAGES_DIR) or not os.path.exists(LABELS_DIR):
         print(f"HATA: Veri seti klasörleri bulunamadı: {IMAGES_DIR} veya {LABELS_DIR}")
         return
-    
-    # Sınıf görüntülerini belirle
-    class_images = get_class_images(IMAGES_DIR, LABELS_DIR)
-    
+        
     # Orijinal görüntüleri kopyala
     copy_original_data()
+    
+    # Sınıf görüntülerini belirle - artık OUTPUT_IMAGES_DIR ve OUTPUT_LABELS_DIR kullanıyoruz
+    class_images = get_class_images(OUTPUT_IMAGES_DIR, OUTPUT_LABELS_DIR)
     
     # Temel çoğaltmaları uygula
     apply_basic_augmentation(class_images)
