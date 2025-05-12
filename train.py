@@ -1,7 +1,7 @@
 from ultralytics import YOLO
 import os
 
-def train_yolo(model_name='yolov8n.pt', epochs=10, batch_size=16, image_size=640):
+def train_yolo(model_name='/content/LeafDeficiencyEnhancer/yolov8n.pt', epochs=10, batch_size=16, image_size=640):
     print(f"\nEğitim başlıyor...")
     print(f"Model: {model_name}")
     print(f"Epochs: {epochs}")
@@ -9,7 +9,7 @@ def train_yolo(model_name='yolov8n.pt', epochs=10, batch_size=16, image_size=640
     print(f"Image Size: {image_size}\n")
 
     # Veri seti yolu kontrolü
-    yaml_path = 'dataset/yolo/dataset.yaml'
+    yaml_path = '/content/LeafDeficiencyEnhancer/dataset/yolo/dataset.yaml'
     if not os.path.exists(yaml_path):
         raise FileNotFoundError(f"dataset.yaml dosyası bulunamadı: {yaml_path}")
     # Model yükleme
