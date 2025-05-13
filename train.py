@@ -116,7 +116,7 @@ def main():
         print("4. Detaylı Eğitim (YOLO11l - 400 epoch)")
         print("5. İki Aşamalı Eğitim (YOLO11l - Ön eğitim (100 epochs) + İnce ayar(1000 epochs))")
         
-        train_choice = input("\nHangi eğitim modelini kullanmak istersiniz? (1/2/3/4): ")
+        train_choice = input("\nHangi eğitim modelini kullanmak istersiniz? (1/2/3/4/5): ")
         
         if train_choice == '1':
             train_yolo(model_name=model_name, epochs=100, batch_size=16)
