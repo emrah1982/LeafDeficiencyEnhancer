@@ -125,13 +125,13 @@ def main():
         elif train_choice == '3':
             train_yolo(model_name='yolo11m.pt', epochs=300, batch_size=16)
         elif train_choice == '4':
-            train_yolo(model_name='yolo11l.pt', epochs=250, batch_size=32)
+            train_yolo(model_name='yolo11n.pt', epochs=250, batch_size=32)
         elif train_choice == '5':
             # İki aşamalı eğitim
             print("\nÖn eğitim başlıyor...")
-            train_yolo(model_name='yolo11l.pt', epochs=100, batch_size=32)
+            train_yolo(model_name='yolo11n.pt', epochs=100, batch_size=32)
             print("\nİnce ayar eğitimi başlıyor...")
-            train_yolo(model_name='runs/train/besin_eksikligi/weights/best.pt', epochs=1000, batch_size=32)
+            train_yolo(model_name='runs/train/besin_eksikligi/weights/best.pt', epochs=100, batch_size=32)
 
 if __name__ == "__main__":
     main()
