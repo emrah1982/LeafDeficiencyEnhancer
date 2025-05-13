@@ -165,7 +165,7 @@ def main():
         elif train_choice == '5':
             # İki aşamalı eğitim
             print("\nÖn eğitim başlıyor...")
-            train_yolo(model_name='yolo11l.pt', epochs=100, batch_size=32)
+            train_yolo(model_name='runs/train/besin_eksikligi/weights/best.pt', epochs=500, batch_size=32)
             print("\nİnce ayar eğitimi başlıyor...")
             train_yolo(model_name='runs/train/besin_eksikligi/weights/best.pt', epochs=1000, batch_size=32)
 
