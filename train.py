@@ -61,7 +61,7 @@ def download_yolo_models(choice='1'):
 def train_yolo(model_name='yolo11n.pt', epochs=10, batch_size=16, image_size=640,
              lr0=0.01, lrf=0.01, momentum=0.937, weight_decay=0.0005,
              warmup_epochs=3.0, warmup_momentum=0.8, warmup_bias_lr=0.1,
-             save_period=50, patience=50):
+             save_period=50, patience=50, val_period=10):
     """YOLO modelini eğit
     Args:
         model_name (str): Model dosyası
@@ -90,6 +90,7 @@ def train_yolo(model_name='yolo11n.pt', epochs=10, batch_size=16, image_size=640
     print(f"Learning Rate: {lr0}")
     print(f"Save Period: Her {save_period} epoch'ta bir")
     print(f"Early Stopping Patience: {patience} epoch")
+    print(f"Validation Period: Her {val_period} epoch'ta bir")
 
     try:
         model = YOLO(model_name)
@@ -113,7 +114,7 @@ def train_yolo(model_name='yolo11n.pt', epochs=10, batch_size=16, image_size=640
             plots=True,  # Eğitim grafiklerini kaydet
             save_json=True,  # Detaylı metrikleri JSON olarak kaydet
             # Validation ve Early Stopping
-            val=True,  # Validation yapma
+            val=val_period,  # Her N epoch'ta bir validation yap
             patience=patience,  # Early stopping için beklenecek epoch sayısı
             # Hyperparametreler
             lr0=lr0,  # başlangıç learning rate
@@ -127,28 +128,7 @@ def train_yolo(model_name='yolo11n.pt', epochs=10, batch_size=16, image_size=640
         
         print("\nEğitim tamamlandı!")
         print(f"Sonuçlar: runs/train/besin_eksikligi klasöründe")
-        
-        # Eğitim metriklerini göster
-        if hasattr(results, 'results_dict'):
-            metrics = results.results_dict
-            print("\nEğitim Metrikleri:")
-            print(f"Son Epoch: {metrics.get('epoch', 'Bilinmiyor')}")
-            print(f"mAP50: {metrics.get('metrics/mAP50(B)', 'Bilinmiyor'):.4f}")
-            print(f"mAP50-95: {metrics.get('metrics/mAP50-95(B)', 'Bilinmiyor'):.4f}")
-            print(f"Precision: {metrics.get('metrics/precision(B)', 'Bilinmiyor'):.4f}")
-            print(f"Recall: {metrics.get('metrics/recall(B)', 'Bilinmiyor'):.4f}")
-            
-            # Eğitim ve validation kayıpları
-            train_loss = metrics.get('train/box_loss', 'Bilinmiyor')
-            val_loss = metrics.get('val/box_loss', 'Bilinmiyor')
-            print(f"\nSon Training Loss: {train_loss if isinstance(train_loss, str) else train_loss:.4f}")
-            print(f"Son Validation Loss: {val_loss if isinstance(val_loss, str) else val_loss:.4f}")
-            
-            # Early stopping bilgisi
-            if metrics.get('early_stop', False):
-                print("\n⚠️ Early Stopping aktif - Aşırı öğrenme tespit edildi!")
-        
-        return results
+        return True
         
     except Exception as e:
         print(f"Eğitim hatası: {e}")
@@ -175,34 +155,19 @@ def main():
         train_choice = input("\nHangi eğitim modelini kullanmak istersiniz? (1/2/3/4): ")
         
         if train_choice == '1':
-            # Hızlı eğitim - daha yüksek learning rate
-            train_yolo(model_name=model_name, epochs=100, batch_size=16,
-                      lr0=0.01, weight_decay=0.0005, warmup_epochs=3)
+            train_yolo(model_name=model_name, epochs=100, batch_size=16)
         elif train_choice == '2':
-            # Standart eğitim - dengeli hyperparametreler
-            train_yolo(model_name='yolo11s.pt', epochs=200, batch_size=16,
-                      lr0=0.005, weight_decay=0.0008, warmup_epochs=5)
+            train_yolo(model_name='yolo11s.pt', epochs=200, batch_size=16)
         elif train_choice == '3':
-            # Detaylı eğitim - daha düşük learning rate, daha yüksek weight decay
-            train_yolo(model_name='yolo11m.pt', epochs=300, batch_size=16,
-                      lr0=0.003, weight_decay=0.001, warmup_epochs=8)
+            train_yolo(model_name='yolo11m.pt', epochs=300, batch_size=16)
         elif train_choice == '4':
-            # Çok detaylı eğitim - en düşük learning rate
-            train_yolo(model_name='yolo11l.pt', epochs=400, batch_size=16,
-                      lr0=0.001, weight_decay=0.001, warmup_epochs=10,
-                      save_period=50, patience=50)
+            train_yolo(model_name='yolo11l.pt', epochs=400, batch_size=16)
         elif train_choice == '5':
             # İki aşamalı eğitim
             print("\nÖn eğitim başlıyor...")
-            # Ön eğitim - yüksek learning rate
-            train_yolo(model_name='yolo11l.pt', epochs=100, batch_size=32,
-                      lr0=0.01, weight_decay=0.0005, warmup_epochs=5,
-                      save_period=25, patience=30)
+            train_yolo(model_name='yolo11l.pt', epochs=100, batch_size=32)
             print("\nİnce ayar eğitimi başlıyor...")
-            # İnce ayar - çok düşük learning rate ve yüksek weight decay
-            train_yolo(model_name='runs/train/besin_eksikligi/weights/best.pt',
-                      epochs=1000, batch_size=32, lr0=0.0001, weight_decay=0.002,
-                      warmup_epochs=3, save_period=50, patience=100)
+            train_yolo(model_name='runs/train/besin_eksikligi/weights/best.pt', epochs=1000, batch_size=32)
 
 if __name__ == "__main__":
     main()
