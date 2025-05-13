@@ -58,25 +58,8 @@ def download_yolo_models(choice='1'):
         print(f"Model indirme hatası: {e}")
         return None
 
-def train_yolo(model_name='yolo11n.pt', epochs=10, batch_size=16, image_size=640,
-             lr0=0.01, lrf=0.01, momentum=0.937, weight_decay=0.0005,
-             warmup_epochs=3.0, warmup_momentum=0.8, warmup_bias_lr=0.1,
-             save_period=50, patience=50, val_period=10):
-    """YOLO modelini eğit
-    Args:
-        model_name (str): Model dosyası
-        epochs (int): Toplam epoch sayısı
-        batch_size (int): Batch boyutu
-        image_size (int): Görüntü boyutu
-        lr0 (float): Başlangıç learning rate
-        lrf (float): Final learning rate (lr0 * lrf)
-        momentum (float): SGD momentum/Adam beta1
-        weight_decay (float): Optimizer weight decay
-        warmup_epochs (float): Warmup epoch sayısı
-        warmup_momentum (float): Warmup başlangıç momentum
-        warmup_bias_lr (float): Warmup başlangıç bias lr
-        save_period (int): Kaç epoch'ta bir kayıt alınacağı
-    """
+def train_yolo(model_name='yolo11n.pt', epochs=10, batch_size=16, image_size=640):
+    """YOLO modelini eğit"""
     # Veri seti yolu kontrolü
     yaml_path = 'dataset/yolo/dataset.yaml'
     if not os.path.exists(yaml_path):
@@ -87,10 +70,6 @@ def train_yolo(model_name='yolo11n.pt', epochs=10, batch_size=16, image_size=640
     print(f"Epochs: {epochs}")
     print(f"Batch Size: {batch_size}")
     print(f"Image Size: {image_size}")
-    print(f"Learning Rate: {lr0}")
-    print(f"Save Period: Her {save_period} epoch'ta bir")
-    print(f"Early Stopping Patience: {patience} epoch")
-    print(f"Validation Period: Her {val_period} epoch'ta bir")
 
     try:
         model = YOLO(model_name)
@@ -108,22 +87,7 @@ def train_yolo(model_name='yolo11n.pt', epochs=10, batch_size=16, image_size=640
             optimizer='Adam',
             verbose=True,
             seed=42,
-            deterministic=True,
-            resume=True,  # Eğitimi kaldığı yerden devam ettir
-            save_period=save_period,  # Her N epoch'ta bir kaydet
-            plots=True,  # Eğitim grafiklerini kaydet
-            save_json=True,  # Detaylı metrikleri JSON olarak kaydet
-            # Validation ve Early Stopping
-            val=val_period,  # Her N epoch'ta bir validation yap
-            patience=patience,  # Early stopping için beklenecek epoch sayısı
-            # Hyperparametreler
-            lr0=lr0,  # başlangıç learning rate
-            lrf=lrf,  # final learning rate (lr0 * lrf)
-            momentum=momentum,  # SGD momentum/Adam beta1
-            weight_decay=weight_decay,  # optimizer weight decay
-            warmup_epochs=warmup_epochs,  # warmup epochs
-            warmup_momentum=warmup_momentum,  # warmup başlangıç momentum
-            warmup_bias_lr=warmup_bias_lr  # warmup başlangıç bias lr
+            deterministic=True
         )
         
         print("\nEğitim tamamlandı!")
