@@ -125,7 +125,7 @@ def main():
         elif train_choice == '3':
             train_yolo(model_name='yolo11m.pt', epochs=300, batch_size=16)
         elif train_choice == '4':
-            train_yolo(model_name='yolo11l.pt', epochs=400, batch_size=16)
+            train_yolo(model_name='yolo11l.pt', epochs=250, batch_size=32)
         elif train_choice == '5':
             # İki aşamalı eğitim
             print("\nÖn eğitim başlıyor...")
