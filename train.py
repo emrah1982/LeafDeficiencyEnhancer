@@ -169,7 +169,7 @@ def main():
         print("\nEğitim için seçenekler:")
         print("1. Hızlı Eğitim (YOLO11n - 100 epoch)")
         print("2. Standart Eğitim (YOLO11s - 200 epoch)")
-        print("3. Detaylı Eğitim (YOLO11m - 300 epoch)")
+        print("3. Detaylı Eğitim (YOLO11l - 300 epoch)")
         print("4. Detaylı Eğitim (YOLO11l - 400 epoch)")
         print("5. İki Aşamalı Eğitim (YOLO11l - Ön eğitim (100 epochs) + İnce ayar(1000 epochs))")
         
@@ -185,7 +185,7 @@ def main():
                       lr0=0.005, weight_decay=0.0008, warmup_epochs=5)
         elif train_choice == '3':
             # Detaylı eğitim - daha düşük learning rate, daha yüksek weight decay
-            train_yolo(model_name='yolo11m.pt', epochs=300, batch_size=16,
+            train_yolo(model_name='yolo11l.pt', epochs=300, batch_size=32,
                       lr0=0.003, weight_decay=0.001, warmup_epochs=8)
         elif train_choice == '4':
             # Çok detaylı eğitim - en düşük learning rate
@@ -196,7 +196,7 @@ def main():
             # İki aşamalı eğitim
             print("\nÖn eğitim başlıyor...")
             # Ön eğitim - yüksek learning rate
-            train_yolo(model_name='yolo11l.pt', epochs=100, batch_size=32,
+            train_yolo(model_name='runs/train/besin_eksikligi/weights/best.pt', epochs=100, batch_size=32,
                       lr0=0.01, weight_decay=0.0005, warmup_epochs=5,
                       save_period=25, patience=30)
             print("\nİnce ayar eğitimi başlıyor...")
