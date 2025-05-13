@@ -158,7 +158,7 @@ def train_yolo(model_name='yolo11n.pt', epochs=10, batch_size=16, image_size=640
 def main():
     """Ana eğitim akışı"""
     print("\nYOLO modellerini indirmek ister misiniz?")
-    print("1. Tüm modelleri indir (YOLOv8n, YOLOv8s, YOLOv8m)")
+    print("1. Tüm modelleri indir (YOLO11n, YOLO11s, YOLO11m)")
     print("2. Sadece seçilen modeli indir")
     print("3. Model indirme (zaten indirilmiş)")
     
