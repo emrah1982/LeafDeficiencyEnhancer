@@ -37,6 +37,9 @@ def apply_basic_augmentation(class_images):
     """Temel veri çoğaltma işlemlerini uygular"""
     print("Temel çoğaltma uygulanıyor...")
     
+    # Sadece görüntü sayısı sıfırdan büyük olan sınıflar için işlem yap
+    active_classes = {class_id: info for class_id, info in CLASS_INFO.items() if info['count'] > 0}
+    
     for class_id, images in class_images.items():
         augmentation_factor = CLASS_INFO[class_id]["target"] // CLASS_INFO[class_id]["count"] + 1
         
@@ -102,7 +105,10 @@ def apply_advanced_augmentation(class_images):
     """Mixup ve Mozaik gibi gelişmiş veri çoğaltma teknikleri uygular"""
     print("Mixup ve Mozaik çoğaltma uygulanıyor...")
     
-    for class_id in CLASS_INFO.keys():
+    # Sadece görüntü sayısı sıfırdan büyük olan sınıflar için işlem yap
+    active_classes = {class_id: info for class_id, info in CLASS_INFO.items() if info['count'] > 0}
+    
+    for class_id in [cid for cid in class_images.keys() if cid in active_classes]:():
         if len(class_images[class_id]) < 2:
             continue
         
@@ -210,7 +216,8 @@ def apply_advanced_augmentation(class_images):
 def analyze_augmented_dataset():
     """Çoğaltılmış veri setinin istatistiklerini hesaplar"""
     print("\nÇoğaltılmış veri seti analiz ediliyor...")
-    class_counts = {0: 0, 1: 0, 2: 0}
+    # Sadece görüntü sayısı sıfırdan büyük olan sınıflar için sayaç oluştur
+    class_counts = {class_id: 0 for class_id, info in CLASS_INFO.items() if info['count'] > 0}
     image_files = [f for f in os.listdir(OUTPUT_IMAGES_DIR) if f.endswith(('.jpg', '.png', '.jpeg'))]
     
     for img_file in image_files:
