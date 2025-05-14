@@ -108,7 +108,7 @@ def apply_advanced_augmentation(class_images):
     # Sadece görüntü sayısı sıfırdan büyük olan sınıflar için işlem yap
     active_classes = {class_id: info for class_id, info in CLASS_INFO.items() if info['count'] > 0}
     
-    for class_id in [cid for cid in class_images.keys() if cid in active_classes]:():
+    for class_id in [cid for cid in class_images.keys() if cid in active_classes]:
         if len(class_images[class_id]) < 2:
             continue
         
