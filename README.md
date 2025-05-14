@@ -7,9 +7,21 @@ Bu proje, bitkilerde besin eksikliği tespiti için YOLOv11 tabanlı derin öğr
 
 Bitkilerde besin eksikliği tespiti, tarımsal üretim ve verimlilik için kritik öneme sahiptir. Bu proje, özellikle üç temel besin eksikliği türünü tespit etmeye odaklanmaktadır:
 
-- **Potasyum Eksikliği**: Genellikle yaprak kenarlarında sararma ile karakterize edilir  
-- **Azot Eksikliği**: Genellikle yapraklarda genel bir sararma ile tanımlanır  
+- **Potasyum (K) Eksikliği**: Genellikle yaprak kenarlarında sararma ile karakterize edilir  
+- **Azot (N) Eksikliği**: Genellikle yapraklarda genel bir sararma ile tanımlanır  
 - **Potasyum ve Azot Eksikliği**: Her iki eksikliğin birleşik belirtileri
+- **Fosfor (P) Eksikliği**: Koyu yeşil-mor yapraklar, yaşlı yapraklarda bronzlaşma
+- **Kalsiyum (Ca) Eksikliği**: Genç yapraklarda büyüme noktası bozuklukları, yaprak kenarlarında nekroz
+- **Magnezyum (Mg) Eksikliği**: Damarlar arası kloroz, yaprak kenarlarında yukarı kıvrılma
+- **Kükürt (S) Eksikliği**: Genç yapraklarda açık yeşil renk, büyümede yavaşlama
+- **Demir (Fe) Eksikliği**: Genç yapraklarda belirgin damarlar arası kloroz
+- **Manganez (Mn) Eksikliği**: Damarlar arasında benekli kloroz, küçük nekrotik lekeler
+- **Çinko (Zn) Eksikliği**: Yapraklarda kloroz, küçük yapraklar, rozet oluşumu
+- **Bakır (Cu) Eksikliği**: Koyu yeşil yapraklar, bükülme ve kıvrılma
+- **Bor (B) Eksikliği**: Büyüme noktasında ölüm, yaprak kalınlaşması
+- **Molibden (Mo) Eksikliği**: Açık yeşil-sarı renk, yaprak kenarlarında yanıklar
+- **Klor (Cl) Eksikliği**: Bronzlaşma, soluk sarı renk, yaprak küçülmesi
+- **Nikel (Ni) Eksikliği**: Nekroz, kloroz ve büyüme noktasında ölüm
 
 ## 📋 Özellikler
 
@@ -150,9 +162,21 @@ Sistem modüler bir yapıda geliştirilmiştir:
 
 | Sınıf                        | Orijinal Görüntü | Çoğaltılmış |
 |-----------------------------|------------------|-------------|
-| Potasyum Eksikliği          | 36               | ~500        |
-| Azot Eksikliği              | 47               | ~500        |
-| Azot ve Potasyum Eksikliği  | 40               | ~500        |
+| Potasyum (K) Eksikliği          | 36               | ~250        |
+| Azot (N) Eksikliği              | 47               | ~250        |
+| Azot ve Potasyum Eksikliği      | 40               | ~250        |
+| Fosfor (P) Eksikliği            | 0                | ~250        |
+| Kalsiyum (Ca) Eksikliği         | 0                | ~250        |
+| Magnezyum (Mg) Eksikliği        | 0                | ~250        |
+| Kükürt (S) Eksikliği           | 0                | ~250        |
+| Demir (Fe) Eksikliği            | 0                | ~250        |
+| Manganez (Mn) Eksikliği         | 0                | ~250        |
+| Çinko (Zn) Eksikliği            | 0                | ~250        |
+| Bakır (Cu) Eksikliği           | 0                | ~250        |
+| Bor (B) Eksikliği               | 0                | ~250        |
+| Molibden (Mo) Eksikliği         | 0                | ~250        |
+| Klor (Cl) Eksikliği             | 0                | ~250        |
+| Nikel (Ni) Eksikliği            | 0                | ~250        |
 
 ## 📝 Konfigürasyon
 
