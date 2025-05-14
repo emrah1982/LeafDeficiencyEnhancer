@@ -146,6 +146,40 @@ Sistem modüler bir yapıda geliştirilmiştir:
 - `dataset.py`: Veri seti oluşturma işlemleri  
 - `visualization.py`: Görselleştirme araçları  
 
+## 🔍 Aşırı Öğrenme (Overfitting) Tespiti ve Önleme
+
+### Aşırı Öğrenmeyi Tespit Etme Yöntemleri
+
+1. **Validation Loss vs Training Loss**
+   - Eğitim sırasında oluşturulan grafiklerde validation loss artmaya başlarken training loss düşmeye devam ediyorsa, bu aşırı öğrenme belirtisidir
+   - Grafikleri `runs/train/besin_eksikligi` klasöründe bulabilirsiniz
+
+2. **Early Stopping**
+   - Model belirli bir epoch sayısı boyunca validation metriklerinde iyileşme göstermezse eğitim otomatik olarak durdurulur
+   - Bu, aşırı öğrenmenin başladığına işaret eder
+
+3. **Metrik Raporları**
+   - JSON formatında kaydedilen detaylı metrik raporlarında:
+     * mAP (mean Average Precision) değerlerini kontrol edebilirsiniz
+     * Validation ve training metriklerini karşılaştırabilirsiniz
+     * Precision-Recall eğrilerini inceleyebilirsiniz
+
+### Aşırı Öğrenmeyi Önleme Teknikleri
+
+1. **Weight Decay Artırma**
+   - Örnek: `weight_decay=0.001`
+   - Model ağırlıklarının büyümesini kontrol eder
+
+2. **Learning Rate Optimizasyonu**
+   - Başlangıç learning rate'ini artırın
+   - Warmup epoch'ları kullanın
+
+3. **Batch Size Ayarlama**
+   - Batch size'ı artırmak modelin genelleştirme yeteneğini artırabilir
+
+4. **Data Augmentation**
+   - Veri setini zenginleştirerek modelin daha iyi genelleştirme yapmasını sağlar
+
 ## 📈 Performans
 
 | Sınıf                        | Orijinal Görüntü | Çoğaltılmış |

@@ -58,9 +58,17 @@ def download_yolo_models(choice='1'):
         print(f"Model indirme hatası: {e}")
         return None
 
-def train_yolo(model_name='yolo11n.pt', epochs=10, batch_size=16, image_size=640):
-    """YOLO modelini eğit"""
-    # Veri seti yolu kontrolü
+def train_yolo(model_name='yolo11n.pt', epochs=10, batch_size=16, image_size=640, patience=20, warmup_epochs=3, initial_lr=0.001):
+    """YOLO modelini eğit
+    Args:
+        model_name (str): Kullanılacak model dosyası
+        epochs (int): Toplam epoch sayısı
+        batch_size (int): Batch boyutu
+        image_size (int): Görüntü boyutu
+        patience (int): Early stopping için sabır sayısı
+        warmup_epochs (int): Warmup epoch sayısı
+        initial_lr (float): Başlangıç öğrenme oranı
+    """
     yaml_path = 'dataset/yolo/dataset.yaml'
     if not os.path.exists(yaml_path):
         raise FileNotFoundError(f"dataset.yaml dosyası bulunamadı: {yaml_path}")
@@ -70,6 +78,9 @@ def train_yolo(model_name='yolo11n.pt', epochs=10, batch_size=16, image_size=640
     print(f"Epochs: {epochs}")
     print(f"Batch Size: {batch_size}")
     print(f"Image Size: {image_size}")
+    print(f"Early Stopping Patience: {patience}")
+    print(f"Warmup Epochs: {warmup_epochs}")
+    print(f"Initial Learning Rate: {initial_lr}")
 
     try:
         model = YOLO(model_name)
@@ -84,10 +95,15 @@ def train_yolo(model_name='yolo11n.pt', epochs=10, batch_size=16, image_size=640
             name='besin_eksikligi',
             exist_ok=True,
             pretrained=True,
-            optimizer='Adam',
-            verbose=True,
+            optimizer='AdamW',  # AdamW optimizer kullan
+            lr0=initial_lr,  # Başlangıç learning rate
+            weight_decay=0.0005,  # Optimizer weight decay
+            patience=patience,  # Early stopping patience
+            save=True,  # Save checkpoints
+            save_period=50,  # Her 50 epoch'ta kaydet
             seed=42,
-            deterministic=True
+            deterministic=True,
+            val=True  # Validate during training
         )
         
         print("\nEğitim tamamlandı!")
@@ -105,7 +121,7 @@ def main():
     print("2. Sadece seçilen modeli indir")
     print("3. Model indirme (zaten indirilmiş)")
     
-    download_choice = input("\nSeçiminiz (1/2/3/4): ")
+    download_choice = input("\nSeçiminiz (1/2/3/4/5): ")
     model_name = download_yolo_models(download_choice)
     
     if model_name:
@@ -114,7 +130,7 @@ def main():
         print("2. Standart Eğitim (YOLO11s - 200 epoch)")
         print("3. Detaylı Eğitim (YOLO11m - 300 epoch)")
         print("4. Detaylı Eğitim (YOLO11l - 400 epoch)")
-        print("5. İki Aşamalı Eğitim (YOLO11l - Ön eğitim (100 epochs) + İnce ayar(1000 epochs))")
+        print("5. İki Aşamalı Eğitim (YOLO11l - Ön eğitim (100 epochs) + İnce ayar(200 epochs))")
         
         train_choice = input("\nHangi eğitim modelini kullanmak istersiniz? (1/2/3/4): ")
         
@@ -125,13 +141,32 @@ def main():
         elif train_choice == '3':
             train_yolo(model_name='yolo11m.pt', epochs=300, batch_size=16)
         elif train_choice == '4':
-            train_yolo(model_name='yolo11n.pt', epochs=250, batch_size=32)
+            train_yolo(model_name='yolo11l.pt', epochs=400, batch_size=16)
         elif train_choice == '5':
             # İki aşamalı eğitim
             print("\nÖn eğitim başlıyor...")
-            train_yolo(model_name='yolo11n.pt', epochs=100, batch_size=32)
+            # İlk aşama: Genel öğrenme
+            train_yolo(
+                model_name='yolo11l.pt',
+                epochs=100,
+                batch_size=32,
+                image_size=640,
+                patience=15,
+                warmup_epochs=5,
+                initial_lr=0.001
+            )
+            
             print("\nİnce ayar eğitimi başlıyor...")
-            train_yolo(model_name='runs/train/besin_eksikligi/weights/best.pt', epochs=100, batch_size=32)
+            # İkinci aşama: İnce ayar (daha düşük learning rate ve daha az augmentasyon)
+            train_yolo(
+                model_name='runs/train/besin_eksikligi/weights/best.pt',
+                epochs=200,  # Epoch sayısını azalttık
+                batch_size=16,  # Batch size'ı azalttık
+                image_size=640,
+                patience=25,  # Daha uzun patience
+                warmup_epochs=2,
+                initial_lr=0.0001  # Daha düşük learning rate
+            )
 
 if __name__ == "__main__":
     main()
