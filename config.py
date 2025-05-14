@@ -8,12 +8,12 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Veri seti bilgileri
 CLASS_INFO = {
-    0: {"name": "Potasyum (K) Eksikliği", "count": 36, "target": 250},
-    1: {"name": "Azot (N) Eksikliği", "count": 47, "target": 250},
-    2: {"name": "Azot ve Potasyum Eksikliği", "count": 40, "target": 250},
-    3: {"name": "Fosfor (P) Eksikliği", "count": 0, "target": 250},
-    4: {"name": "Kalsiyum (Ca) Eksikliği", "count": 0, "target": 250},
-    5: {"name": "Magnezyum (Mg) Eksikliği", "count": 0, "target": 250},
+    0: {"name": "Potasyum (K) Eksikliği", "count": 36, "target": 2000},
+    1: {"name": "Azot (N) Eksikliği", "count": 47, "target": 2000},
+    2: {"name": "Azot ve Potasyum Eksikliği", "count": 40, "target": 2000},
+    3: {"name": "Fosfor (P) Eksikliği", "count": 0, "target": 2000},
+    4: {"name": "Kalsiyum (Ca) Eksikliği", "count": 0, "target": 2000},
+    5: {"name": "Magnezyum (Mg) Eksikliği", "count": 0, "target": 2000},
     6: {"name": "Kükürt (S) Eksikliği", "count": 0, "target": 250},
     7: {"name": "Demir (Fe) Eksikliği", "count": 0, "target": 250},
     8: {"name": "Manganez (Mn) Eksikliği", "count": 0, "target": 250},
