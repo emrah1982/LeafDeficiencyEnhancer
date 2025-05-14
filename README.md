@@ -196,7 +196,52 @@ TEST_RATIO = 0.2
 
 ## 🔮 İleri Düzey Kullanım
 
-### Özel Dönüşümler Ekleme
+### Özel Dönüşümler
+
+#### Azot ve Potasyum Eksikliği için Özel Çoğaltma
+
+```python
+def get_combined_deficiency_transform():
+    return A.Compose([
+        # Azot eksikliği belirtileri
+        A.ColorJitter(
+            brightness=0.2,  # Genel sararma için parlaklık artışı
+            contrast=0.2,    # Kontrast ayarı
+            saturation=0.3,  # Doygunluk azaltma
+            hue=0.1,        # Renk tonu değişimi
+            p=0.8
+        ),
+        # Potasyum eksikliği belirtileri
+        A.OneOf([
+            # Yaprak kenarlarında sararma efekti
+            A.RandomBrightnessContrast(
+                brightness_limit=0.3,
+                contrast_limit=0.2,
+                p=1.0
+            ),
+            # Nekroz benzeri koyu lekeler
+            A.MultiplicativeNoise(
+                multiplier=[0.7, 0.9],
+                per_channel=True,
+                p=1.0
+            )
+        ], p=0.8),
+        # Genel doku ve şekil değişiklikleri
+        A.OneOf([
+            A.OpticalDistortion(distort_limit=0.2, p=1.0),  # Yaprak kıvrılmaları
+            A.GridDistortion(distort_limit=0.2, p=1.0),      # Doku bozulmaları
+            A.ElasticTransform(alpha=120, sigma=120, p=1.0)  # Elastik deformasyonlar
+        ], p=0.5),
+        # Gerçekçilik artırıcı efektler
+        A.OneOf([
+            A.GaussNoise(var_limit=(10.0, 50.0), p=1.0),   # Doku detayları
+            A.Sharpen(alpha=(0.2, 0.5), p=1.0),             # Kenar belirginleştirme
+            A.Emboss(alpha=(0.2, 0.5), p=1.0)               # Kabartma efekti
+        ], p=0.3)
+    ], bbox_params=A.BboxParams(format='pascal_voc', label_fields=['class_labels']))
+```
+
+#### Diğer Özel Dönüşümler
 
 ```python
 def get_custom_transform():
